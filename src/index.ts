@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 import {
-  isWorkingHour,
+  waitToWorkingHour,
   randomDelay,
   loadJobIds,
   saveJobId,
@@ -12,7 +12,7 @@ import CONFIG from "./config";
 const main = async () => {
   try {
     validateConfig();
-    console.log(`BASE_URL: ${CONFIG.BASE_URL}`);
+    console.log(`Base url: ${CONFIG.BASE_URL}`);
     console.log(`File for storing vacancies: ${CONFIG.JOBS_LIST_FILE}`);
 
     const jobIds = loadJobIds(CONFIG.JOBS_LIST_FILE);
@@ -22,15 +22,11 @@ const main = async () => {
     const page = await context.newPage();
 
     while (true) {
-      if (!isWorkingHour(CONFIG.WORK_HOURS)) {
-        console.log("Not working time. Waiting...");
-        await randomDelay(CONFIG.DELAY.LONG[0], CONFIG.DELAY.LONG[1]);
-        continue;
-      }
+      await waitToWorkingHour(CONFIG.WORK_HOURS);
 
       console.log("Load page...");
       await page.goto(CONFIG.BASE_URL || "");
-      await page.waitForTimeout(3000);
+      await page.waitForSelector("div[data-job-id]");
 
       const jobs = await page.$$("div[data-job-id]");
       for (const job of jobs) {
@@ -44,17 +40,24 @@ const main = async () => {
         const description = await page.textContent(
           "div.jobs-description__content"
         );
+        const skills = await page.textContent(
+          "button.job-details-jobs-unified-top-card__job-insight-text-button>a"
+        );
         const jobUrl = await page.getAttribute(
           "div.t-24.job-details-jobs-unified-top-card__job-title a",
           "href"
         );
         const jobUrlFull = `https://www.linkedin.com${jobUrl}`;
 
-        if (
-          description?.includes("React") &&
-          !description.includes("gute Deutsch")
-        ) {
-          const message = `New vacancy:\n*${title}*${description}Url: ${jobUrlFull}`;
+        const matchesIncludes = CONFIG.FILTERS.INCLUDES.some((word: string) =>
+          description?.includes(word)
+        );
+        const matchesExcludes = CONFIG.FILTERS.EXCLUDES.some((word: string) =>
+          description?.includes(word)
+        );
+
+        if (matchesIncludes && !matchesExcludes) {
+          const message = `New vacancy:\n*${title}*\n${skills}\nUrl: ${jobUrlFull}`;
           await sendTelegramMessage(message);
         } else {
           console.log("The vacancy does not match the filters.");
@@ -66,7 +69,7 @@ const main = async () => {
       await page.close();
       console.log("W8 for next interaction");
 
-      await randomDelay(CONFIG.DELAY.SHORT[0], CONFIG.DELAY.SHORT[1]);
+      await randomDelay(CONFIG.DELAY[0], CONFIG.DELAY[1]);
     }
   } catch (error: any) {
     console.error(error.message);

@@ -1,10 +1,25 @@
 import * as fs from "fs";
 
-export const isWorkingHour = (workHours: number[][]): boolean => {
-  const currentHour = new Date().getHours();
-  return workHours.some(
-    ([start, end]) => currentHour >= start && currentHour < end
+export const waitToTime = async (targetHour: number): Promise<void> => {
+  const now = new Date();
+  const targetTime = new Date(now);
+  targetTime.setHours(targetHour, 0, 0, 0);
+
+  if (now.getTime() > targetTime.getTime()) {
+    targetTime.setDate(targetTime.getDate() + 1);
+  }
+
+  console.log(`Waiting until ${targetTime.toLocaleTimeString()}`);
+  return new Promise((resolve) =>
+    setTimeout(resolve, targetTime.getTime() - now.getTime())
   );
+};
+
+export const waitToWorkingHour = async (workHours: number[]): Promise<void> => {
+  const currentHour = new Date().getHours();
+  if (!(currentHour >= workHours[0] && currentHour < workHours[1])) {
+    await waitToTime(workHours[0]);
+  }
 };
 
 export const randomDelay = (min: number, max: number): Promise<void> => {
@@ -26,7 +41,7 @@ export const saveJobId = (jobId: string, filePath: string): void => {
 };
 
 export const validateConfig = (): void => {
-  const requiredVars = ["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"];
+  const requiredVars = ["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID", "BASE_URL"];
   const missingVars = requiredVars.filter((key) => !process.env[key]);
 
   if (missingVars.length > 0) {

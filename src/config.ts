@@ -7,14 +7,11 @@ const JOBS_LIST_FILE = process.env.JOBS_LIST_FILE || "jobs.txt";
 
 const CONFIG = {
   BASE_URL,
-  WORK_HOURS: [
-    [8, 10],
-    [12, 15],
-    [17, 20],
-  ],
-  DELAY: {
-    SHORT: [5, 10],
-    LONG: [20, 40],
+  WORK_HOURS: [8, 24],
+  DELAY: [5, 10],
+  FILTERS: {
+    INCLUDES: ["React", "TypeScript", "Remote"],
+    EXCLUDES: ["gute Deutsch", "Proficiency in German"],
   },
   TELEGRAM: {
     BOT_TOKEN,
