@@ -1,4 +1,4 @@
-import { chromium } from "playwright";
+import { chromium, Browser, BrowserContext } from "playwright";
 import {
   waitToWorkingHour,
   randomDelay,
@@ -15,15 +15,20 @@ const main = async () => {
     console.log(`Base url: ${CONFIG.BASE_URL}`);
     console.log(`File for storing vacancies: ${CONFIG.JOBS_LIST_FILE}`);
 
-    const jobIds = loadJobIds(CONFIG.JOBS_LIST_FILE);
-
-    const browser = await chromium.connectOverCDP("http://localhost:9222");
-    const context = browser.contexts()[0];
+    let browser = await chromium.connectOverCDP("http://localhost:9222");
+    let context = browser.contexts()[0];
 
     while (true) {
       try {
+        if (!browser.isConnected()) {
+          console.error("Context has been closed. Reinitializing...");
+          browser = await chromium.connectOverCDP("http://localhost:9222");
+          context = browser.contexts()[0];
+        }
+
         await waitToWorkingHour(CONFIG.WORK_HOURS);
         const page = await context.newPage();
+        const jobIds = loadJobIds(CONFIG.JOBS_LIST_FILE);
 
         console.log("Load page...");
         await page.goto(CONFIG.BASE_URL || "");
