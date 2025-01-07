@@ -1,0 +1,19 @@
+{
+  "name": "job-search",
+  "version": "1.0.0",
+  "description": "Parser for job-platforms",
+  "main": "index.js",
+  "repository": "git@github.com:web6studio/job-search.git",
+  "author": "Nick <web6studio@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@types/node": "^22.10.5",
+    "dotenv": "^16.4.7",
+    "playwright": "npm:rebrowser-playwright@^1.49.1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
