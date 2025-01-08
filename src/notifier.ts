@@ -1,10 +1,11 @@
-import CONFIG from "./config";
+import { TelegramConfig } from "./utils";
 
-const {
-  TELEGRAM: { BOT_TOKEN, CHAT_ID },
-} = CONFIG;
+export const sendTelegramMessage = async (
+  message: string,
+  telegramConfig: TelegramConfig
+) => {
+  const { BOT_TOKEN, CHAT_ID } = telegramConfig;
 
-export const sendTelegramMessage = async (message: any) => {
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 
   try {
@@ -23,7 +24,11 @@ export const sendTelegramMessage = async (message: any) => {
     }
 
     console.log("Message sent to Telegram!");
-  } catch (error: any) {
-    console.error("Error sending message to Telegram: ", error.message);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error sending message to Telegram: ", error.message);
+    } else {
+      console.error("Unknown sending message to Telegram: ", error);
+    }
   }
 };

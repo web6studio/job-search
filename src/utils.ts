@@ -40,15 +40,24 @@ export const saveJobId = (jobId: string, filePath: string): void => {
   fs.appendFileSync(filePath, `${jobId}\n`);
 };
 
-export const validateConfig = (): void => {
-  const requiredVars = ["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID", "BASE_URL"];
-  const missingVars = requiredVars.filter((key) => !process.env[key]);
+export const loadConfig = (): Config[] => {
+  const rawData = fs.readFileSync("./config.json", "utf-8");
+  return JSON.parse(rawData);
+};
 
-  if (missingVars.length > 0) {
-    throw new Error(
-      `The following required environment variables are missing: ${missingVars.join(
-        ", "
-      )}`
-    );
-  }
+export type Config = {
+  BASE_URL: string;
+  WORK_HOURS: [number, number];
+  DELAY: [number, number];
+  FILTERS: {
+    INCLUDES: string[];
+    EXCLUDES: string[];
+  };
+  TELEGRAM: TelegramConfig;
+  JOBS_LIST_FILE: string;
+};
+
+export type TelegramConfig = {
+  BOT_TOKEN: string;
+  CHAT_ID: string;
 };
