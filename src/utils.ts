@@ -22,8 +22,8 @@ export const waitToWorkingHour = async (workHours: number[]): Promise<void> => {
   }
 };
 
-export const randomDelay = (min: number, max: number): Promise<void> => {
-  const delay = Math.floor(Math.random() * (max - min + 1) + min) * 60000;
+export const randomSecDelay = (min: number, max: number): Promise<void> => {
+  const delay = Math.floor(Math.random() * (max - min + 1) + min) * 1000;
   return new Promise((resolve) => setTimeout(resolve, delay));
 };
 
@@ -48,13 +48,14 @@ export const loadConfig = (): Config[] => {
 export type Config = {
   BASE_URL: string;
   WORK_HOURS: [number, number];
-  DELAY: [number, number];
+  DELAY_SEC: [number, number];
   FILTERS: {
     INCLUDES: string[];
     EXCLUDES: string[];
   };
   TELEGRAM: TelegramConfig;
   JOBS_LIST_FILE: string;
+  PORT?: string;
 };
 
 export type TelegramConfig = {

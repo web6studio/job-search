@@ -2,7 +2,7 @@
   {
     "BASE_URL": "https://www.linkedin.com/jobs/search/?distance=25&f_TPR=r86400&geoId=100477049&keywords=(Frontend%20OR%20%22Frontend%20Developer%22%20OR%20%22React%20Developer%22%20OR%20%22Mobile%20Developer%22%20OR%20%22React%20Native%20Developer%22%20OR%20%22Full%20Stack%20Developer%22%20OR%20%22TypeScript%20Developer%22%20OR%20%22JavaScript%20Developer%22%20OR%20%22Frontend%20Entwickler%22%20OR%20%22Mobile%20Entwickler%22%20OR%20%22Fullstack%20Entwickler%22)%20AND%20(React%20AND%20Developer)&origin=JOB_SEARCH_PAGE_SEARCH_BUTTON&refresh=true&sortBy=DD",
     "WORK_HOURS": [8, 24],
-    "DELAY": [5, 10],
+    "DELAY_SEC": [300, 600],
     "FILTERS": {
       "INCLUDES": ["React", "TypeScript", "Remote"],
       "EXCLUDES": ["gute Deutsch", "Proficiency in German"]
@@ -11,6 +11,7 @@
       "BOT_TOKEN": "SOME_BOT_TOKEN",
       "CHAT_ID": "SOME_CHAT_ID"
     },
-    "JOBS_LIST_FILE": "jobs.txt"
+    "JOBS_LIST_FILE": "jobs.txt",
+    "PORT": 9222
   }
 ]
