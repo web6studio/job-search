@@ -132,3 +132,5 @@ dist
 user-data
 jobs.txt
 config.json
+yarn.lock
+package-lock.json
